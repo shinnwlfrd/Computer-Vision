@@ -13,22 +13,26 @@ st.set_page_config(
 )
 
 # ============================
-# RESPONSIVE THEME (DARK/LIGHT BASED ON SYSTEM)
+# FULL RESPONSIVE THEME (DARK/LIGHT BASED ON SYSTEM)
 # ============================
 st.markdown("""
 <style>
-/* Hapus white boxes Streamlit */
-.css-1d391kg, .css-1iyw2u1, .css-12oz5g7, .css-18e3th9 {
-    background-color: transparent !important;
-    box-shadow: none !important;
+/* RESET SEMUA BACKGROUND KE TRANSPARAN */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-/* MEDIA QUERY: DARK MODE */
+/* TARGET SELURUH HALAMAN */
+html, body, [data-testid="stAppViewContainer"], [data-testid="stApp"] {
+    background: transparent !important;
+}
+
+/* FORCE THEME BERDASARKAN SISTEM */
 @media (prefers-color-scheme: dark) {
-    main {
+    [data-testid="stAppViewContainer"] {
         background-color: #0f172a !important;
-    }
-    body, p, div, span, h1, h2, h3, h4, h5, h6, li, ol, ul, .stMarkdown {
         color: #e2e8f0 !important;
     }
     .main-title {
@@ -37,22 +41,30 @@ st.markdown("""
     .card {
         background: rgba(255,255,255,0.05);
         border: 1px solid rgba(255,255,255,0.08);
+        color: #e2e8f0;
     }
     .result-box {
         background: rgba(59,130,246,0.15);
         border-left: 4px solid #3b82f6;
+        color: #e2e8f0;
     }
     [data-testid="stSidebar"] {
         background-color: #1e293b !important;
+        color: #e2e8f0 !important;
+    }
+    .stMarkdown, .stText, p, div, span, li, ul, ol, h1, h2, h3, h4, h5, h6 {
+        color: #e2e8f0 !important;
+    }
+    /* File uploader & input text tetap readable */
+    input, textarea, .stFileUploader {
+        color: #e2e8f0 !important;
+        background-color: rgba(0,0,0,0.2) !important;
     }
 }
 
-/* MEDIA QUERY: LIGHT MODE */
 @media (prefers-color-scheme: light) {
-    main {
+    [data-testid="stAppViewContainer"] {
         background-color: #f8fafc !important;
-    }
-    body, p, div, span, h1, h2, h3, h4, h5, h6, li, ol, ul, .stMarkdown {
         color: #1e293b !important;
     }
     .main-title {
@@ -61,17 +73,27 @@ st.markdown("""
     .card {
         background: rgba(0,0,0,0.03);
         border: 1px solid rgba(0,0,0,0.1);
+        color: #1e293b;
     }
     .result-box {
         background: rgba(37,99,235,0.1);
         border-left: 4px solid #2563eb;
+        color: #1e293b;
     }
     [data-testid="stSidebar"] {
         background-color: #e2e8f0 !important;
+        color: #1e293b !important;
+    }
+    .stMarkdown, .stText, p, div, span, li, ul, ol, h1, h2, h3, h4, h5, h6 {
+        color: #1e293b !important;
+    }
+    input, textarea, .stFileUploader {
+        color: #1e293b !important;
+        background-color: white !important;
     }
 }
 
-/* Judul utama */
+/* GLOBAL STYLING (BERLAKU DI KEDUA MODE) */
 .main-title {
     font-size: 34px;
     font-weight: bold;
@@ -79,20 +101,17 @@ st.markdown("""
     padding: 10px 0 30px 0;
 }
 
-/* CUSTOM CARD */
 .card {
     padding: 18px;
     border-radius: 12px;
     margin-bottom: 20px;
 }
 
-/* RESULT BOX */
 .result-box {
     padding: 18px;
     border-radius: 8px;
 }
 
-/* BUTTON STYLE (konsisten di kedua tema) */
 .stButton > button {
     width: 100%;
     background: #2563eb !important;
@@ -105,6 +124,13 @@ st.markdown("""
 .stButton > button:hover {
     background: #1e40af !important;
 }
+
+/* HAPUS SEMUA WHITE BOX BAWAAN STREAMLIT */
+section, .css-1d391kg, .css-1iyw2u1, .css-12oz5g7, .css-18e3th9, .st-emotion-cache-1v0mbdj, .st-emotion-cache-12w0qpk {
+    background-color: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -113,16 +139,15 @@ st.markdown("""
 # ============================
 @st.cache_resource
 def load_models():
-    cnn_model = tf.keras.models.load_model("cnn_feature_extractor.h5")
-    knn_model = joblib.load("knn_classifier.pkl")
-    return cnn_model, knn_model
+    try:
+        cnn_model = tf.keras.models.load_model("cnn_feature_extractor.h5")
+        knn_model = joblib.load("knn_classifier.pkl")
+        return cnn_model, knn_model
+    except Exception as e:
+        st.error(f"Error loading model: {str(e)}")
+        st.stop()
 
-try:
-    cnn, knn = load_models()
-except Exception as e:
-    st.error("Gagal memuat model. Pastikan file `cnn_feature_extractor.h5` dan `knn_classifier.pkl` tersedia.")
-    st.stop()
-
+cnn, knn = load_models()
 IMG_SIZE = 128
 
 def preprocess_image(img):
@@ -143,7 +168,6 @@ st.markdown("<div class='main-title'>Deteksi Kesegaran Ikan (Hybrid CNN + KNN)</
 
 left, right = st.columns([1.3, 1])
 
-# LEFT SIDE
 with left:
     st.markdown("<div class='card'><b>📤 Upload Gambar Ikan</b></div>", unsafe_allow_html=True)
     uploaded = st.file_uploader("Pilih gambar ikan", type=["jpg", "png", "jpeg"])
@@ -159,13 +183,13 @@ with left:
         st.markdown("<div class='card'><b>🤖 Klasifikasi</b></div>", unsafe_allow_html=True)
         if st.button("Prediksi"):
             result = hybrid_predict(arr)
+            st.markdown(f"""
+            <div class='result-box'>
+                <h4>Hasil Prediksi:</h4>
+                <p><b>Ikan terdeteksi sebagai:</b> <code>{result.upper()}</code></p>
+            </div>
+            """, unsafe_allow_html=True)
 
-            st.markdown("<div class='result-box'>", unsafe_allow_html=True)
-            st.write("### Hasil Prediksi:")
-            st.write(f"**Ikan terdeteksi sebagai:** `{result.upper()}`")
-            st.markdown("</div>", unsafe_allow_html=True)
-
-# RIGHT SIDE
 with right:
     st.markdown("<div class='card'><b>ℹ️ Informasi Aplikasi</b></div>", unsafe_allow_html=True)
     st.write("""
