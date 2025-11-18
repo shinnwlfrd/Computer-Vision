@@ -13,54 +13,86 @@ st.set_page_config(
 )
 
 # ============================
-# CUSTOM DARK THEME + REMOVE WHITE BOX
+# RESPONSIVE THEME (DARK/LIGHT BASED ON SYSTEM)
 # ============================
 st.markdown("""
 <style>
-
-/* REMOVE STREAMLIT WHITE BLOCKS */
+/* Hapus white boxes Streamlit */
 .css-1d391kg, .css-1iyw2u1, .css-12oz5g7, .css-18e3th9 {
     background-color: transparent !important;
     box-shadow: none !important;
 }
 
-/* MAIN BACKGROUND */
-main {
-    background-color: #0f172a;
+/* MEDIA QUERY: DARK MODE */
+@media (prefers-color-scheme: dark) {
+    main {
+        background-color: #0f172a !important;
+    }
+    body, p, div, span, h1, h2, h3, h4, h5, h6, li, ol, ul, .stMarkdown {
+        color: #e2e8f0 !important;
+    }
+    .main-title {
+        color: #60a5fa;
+    }
+    .card {
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.08);
+    }
+    .result-box {
+        background: rgba(59,130,246,0.15);
+        border-left: 4px solid #3b82f6;
+    }
+    [data-testid="stSidebar"] {
+        background-color: #1e293b !important;
+    }
 }
 
-/* TEXT COLOR */
-body, p, div, span {
-    color: #e2e8f0 !important;
+/* MEDIA QUERY: LIGHT MODE */
+@media (prefers-color-scheme: light) {
+    main {
+        background-color: #f8fafc !important;
+    }
+    body, p, div, span, h1, h2, h3, h4, h5, h6, li, ol, ul, .stMarkdown {
+        color: #1e293b !important;
+    }
+    .main-title {
+        color: #2563eb;
+    }
+    .card {
+        background: rgba(0,0,0,0.03);
+        border: 1px solid rgba(0,0,0,0.1);
+    }
+    .result-box {
+        background: rgba(37,99,235,0.1);
+        border-left: 4px solid #2563eb;
+    }
+    [data-testid="stSidebar"] {
+        background-color: #e2e8f0 !important;
+    }
 }
 
-/* HEADER TITLE */
+/* Judul utama */
 .main-title {
     font-size: 34px;
     font-weight: bold;
     text-align: center;
-    color: #60a5fa;
     padding: 10px 0 30px 0;
 }
 
 /* CUSTOM CARD */
 .card {
-    background: rgba(255,255,255,0.05);
     padding: 18px;
     border-radius: 12px;
     margin-bottom: 20px;
-    border: 1px solid rgba(255,255,255,0.08);
 }
 
 /* RESULT BOX */
 .result-box {
-    background: rgba(59,130,246,0.15);
     padding: 18px;
-    border-left: 4px solid #3b82f6;
     border-radius: 8px;
 }
 
-/* BUTTON STYLE */
+/* BUTTON STYLE (konsisten di kedua tema) */
 .stButton > button {
     width: 100%;
     background: #2563eb !important;
@@ -73,12 +105,6 @@ body, p, div, span {
 .stButton > button:hover {
     background: #1e40af !important;
 }
-
-/* SIDEBAR DARK */
-[data-testid="stSidebar"] {
-    background-color: #1e293b !important;
-}
-
 </style>
 """, unsafe_allow_html=True)
 
@@ -91,7 +117,11 @@ def load_models():
     knn_model = joblib.load("knn_classifier.pkl")
     return cnn_model, knn_model
 
-cnn, knn = load_models()
+try:
+    cnn, knn = load_models()
+except Exception as e:
+    st.error("Gagal memuat model. Pastikan file `cnn_feature_extractor.h5` dan `knn_classifier.pkl` tersedia.")
+    st.stop()
 
 IMG_SIZE = 128
 
@@ -102,7 +132,7 @@ def preprocess_image(img):
     return arr
 
 def hybrid_predict(arr):
-    feature = cnn.predict(arr)
+    feature = cnn.predict(arr, verbose=0)
     label = knn.predict(feature)[0]
     return "fresh" if label == 1 else "nonfresh"
 
