@@ -3,7 +3,6 @@ import numpy as np
 import tensorflow as tf
 import joblib
 from PIL import Image
-import cv2
 import os
 
 # ============================
@@ -125,3 +124,4 @@ Model CNN menghasilkan fitur citra, KNN melakukan klasifikasi akhir.
 - Input citra grayscale 128x128  
 - Model dimuat sekali dengan caching agar cepat  
 """)
+
