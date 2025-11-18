@@ -43,8 +43,8 @@ st.markdown("""
 # ============================
 @st.cache_resource
 def load_models():
-    cnn_model = tf.keras.models.load_model("model/model_cnn.h5")
-    knn_model = joblib.load("model/model_knn.pkl")
+    cnn_model = tf.keras.models.load_model("cnn_feature_extractor.h5")
+    knn_model = joblib.load("knn_classifier.pkl")
     return cnn_model, knn_model
 
 cnn, knn = load_models()
@@ -124,4 +124,5 @@ Model CNN menghasilkan fitur citra, KNN melakukan klasifikasi akhir.
 - Input citra grayscale 128x128  
 - Model dimuat sekali dengan caching agar cepat  
 """)
+
 
