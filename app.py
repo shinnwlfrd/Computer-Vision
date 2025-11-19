@@ -514,9 +514,10 @@ with right:
         </div>
         <ul class='feature-list'>
             <li>📸 Gunakan foto yang jelas dan terang</li>
-            <li>🎯 Fokus pada badan ikan</li>
+            <li>🎯 Fokus pada mata ikan</li>
             <li>🔍 Hindari gambar yang buram</li>
             <li>📏 Pastikan framing yang tepat</li>
         </ul>
     </div>
     """, unsafe_allow_html=True)
+
