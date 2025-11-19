@@ -8,7 +8,7 @@ from PIL import Image
 # PAGE SETTINGS
 # ============================
 st.set_page_config(
-    page_title="🐟 Fish Freshness Detector",
+    page_title="🐟 Deteksi Kesegaran Ikan",
     page_icon="🐟",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -330,7 +330,7 @@ def load_models():
         st.error(f"❌ Error loading model: {str(e)}")
         st.stop()
 
-with st.spinner("🔄 Loading AI models..."):
+with st.spinner("🔄 Memuat model AI..."):
     cnn, knn = load_models()
 IMG_SIZE = 128
 
@@ -350,8 +350,8 @@ def hybrid_predict(arr):
 # ============================
 st.markdown("""
 <div class='main-header'>
-    <h1 class='main-title gradient-header'>🐟 Fish Freshness Detector</h1>
-    <p class='subtitle'>AI-Powered Hybrid CNN + KNN Classification System</p>
+    <h1 class='main-title gradient-header'>🐟 Deteksi Kesegaran Ikan</h1>
+    <p class='subtitle'>Sistem Klasifikasi Hybrid CNN + KNN Berbasis AI</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -359,37 +359,37 @@ st.markdown("""
 # SIDEBAR
 # ============================
 with st.sidebar:
-    st.markdown("### ⚙️ Model Information")
+    st.markdown("### ⚙️ Informasi Model")
     st.markdown("""
     <div class='stat-box'>
         <div class='stat-value'>CNN</div>
-        <div class='stat-label'>Feature Extractor</div>
+        <div class='stat-label'>Ekstraksi Fitur</div>
     </div>
     """, unsafe_allow_html=True)
     
     st.markdown("""
     <div class='stat-box'>
         <div class='stat-value'>KNN</div>
-        <div class='stat-label'>Classifier</div>
+        <div class='stat-label'>Klasifikasi</div>
     </div>
     """, unsafe_allow_html=True)
     
     st.markdown("""
     <div class='stat-box'>
         <div class='stat-value'>128×128</div>
-        <div class='stat-label'>Image Size</div>
+        <div class='stat-label'>Ukuran Gambar</div>
     </div>
     """, unsafe_allow_html=True)
     
     st.markdown("---")
-    st.markdown("### 📊 How It Works")
+    st.markdown("### 📊 Cara Kerja")
     st.markdown("""
     <ul class='feature-list'>
-        <li>📤 Upload fish image</li>
-        <li>🔄 Preprocess to grayscale</li>
-        <li>🧠 Extract features with CNN</li>
-        <li>🎯 Classify with KNN</li>
-        <li>✅ Get instant results</li>
+        <li>📤 Upload gambar ikan</li>
+        <li>🔄 Preprocessing ke grayscale</li>
+        <li>🧠 Ekstraksi fitur dengan CNN</li>
+        <li>🎯 Klasifikasi dengan KNN</li>
+        <li>✅ Dapatkan hasil instan</li>
     </ul>
     """, unsafe_allow_html=True)
 
@@ -404,57 +404,57 @@ with left:
     <div class='card'>
         <div class='card-title'>
             <span class='icon'>📤</span>
-            <span>Upload Fish Image</span>
+            <span>Upload Gambar Ikan</span>
         </div>
     </div>
     """, unsafe_allow_html=True)
     
     uploaded = st.file_uploader(
-        "Choose an image file (JPG, PNG, JPEG)",
+        "Pilih file gambar (JPG, PNG, JPEG)",
         type=["jpg", "png", "jpeg"],
         label_visibility="collapsed"
     )
 
     if uploaded:
         img = Image.open(uploaded)
-        st.image(img, caption="📷 Uploaded Image", use_container_width=True)
+        st.image(img, caption="📷 Gambar yang Diupload", use_container_width=True)
 
         # Feature Extraction
         st.markdown("""
         <div class='card'>
             <div class='card-title'>
                 <span class='icon'>🔍</span>
-                <span>Feature Extraction</span>
+                <span>Ekstraksi Fitur</span>
             </div>
         </div>
         """, unsafe_allow_html=True)
         
-        with st.spinner("🔄 Processing image..."):
+        with st.spinner("🔄 Memproses gambar..."):
             arr = preprocess_image(img)
-            st.success("✅ Feature extraction completed successfully!")
+            st.success("✅ Ekstraksi fitur berhasil diselesaikan!")
 
         # Classification
         st.markdown("""
         <div class='card'>
             <div class='card-title'>
                 <span class='icon'>🤖</span>
-                <span>AI Classification</span>
+                <span>Klasifikasi AI</span>
             </div>
         </div>
         """, unsafe_allow_html=True)
         
-        if st.button("🚀 Analyze Freshness"):
-            with st.spinner("🧠 AI is analyzing..."):
+        if st.button("🚀 Analisis Kesegaran"):
+            with st.spinner("🧠 AI sedang menganalisis..."):
                 result = hybrid_predict(arr)
                 
                 if result == "fresh":
                     st.markdown(f"""
                     <div class='result-fresh'>
-                        <div class='result-title'>✅ Classification Result</div>
-                        <p>The fish has been classified as:</p>
-                        <div class='result-label'>🟢 FRESH</div>
+                        <div class='result-title'>✅ Hasil Klasifikasi</div>
+                        <p>Ikan telah diklasifikasikan sebagai:</p>
+                        <div class='result-label'>🟢 SEGAR</div>
                         <p style='margin-top: 12px; opacity: 0.9;'>
-                            The fish appears to be in good condition and safe for consumption.
+                            Ikan tampak dalam kondisi baik dan aman untuk dikonsumsi.
                         </p>
                     </div>
                     """, unsafe_allow_html=True)
@@ -462,11 +462,11 @@ with left:
                 else:
                     st.markdown(f"""
                     <div class='result-nonfresh'>
-                        <div class='result-title'>⚠️ Classification Result</div>
-                        <p>The fish has been classified as:</p>
-                        <div class='result-label'>🔴 NOT FRESH</div>
+                        <div class='result-title'>⚠️ Hasil Klasifikasi</div>
+                        <p>Ikan telah diklasifikasikan sebagai:</p>
+                        <div class='result-label'>🔴 TIDAK SEGAR</div>
                         <p style='margin-top: 12px; opacity: 0.9;'>
-                            The fish may not be suitable for consumption. Please verify before use.
+                            Ikan mungkin tidak cocok untuk dikonsumsi. Harap verifikasi sebelum digunakan.
                         </p>
                     </div>
                     """, unsafe_allow_html=True)
@@ -477,12 +477,12 @@ with right:
     <div class='info-card'>
         <div class='card-title'>
             <span class='icon'>ℹ️</span>
-            <span>About This Application</span>
+            <span>Tentang Aplikasi Ini</span>
         </div>
         <p style='line-height: 1.8; margin-top: 12px;'>
-            This intelligent system combines the power of <strong>Convolutional Neural Networks (CNN)</strong> 
-            for feature extraction and <strong>K-Nearest Neighbors (KNN)</strong> for classification 
-            to accurately detect fish freshness.
+            Sistem cerdas ini menggabungkan kekuatan <strong>Convolutional Neural Networks (CNN)</strong> 
+            untuk ekstraksi fitur dan <strong>K-Nearest Neighbors (KNN)</strong> untuk klasifikasi 
+            guna mendeteksi kesegaran ikan secara akurat.
         </p>
     </div>
     """, unsafe_allow_html=True)
@@ -492,15 +492,15 @@ with right:
     <div class='card'>
         <div class='card-title'>
             <span class='icon'>⚡</span>
-            <span>Technical Specifications</span>
+            <span>Spesifikasi Teknis</span>
         </div>
         <ul class='feature-list'>
-            <li>🧠 <strong>Deep Learning:</strong> CNN architecture</li>
-            <li>🎯 <strong>Classifier:</strong> K-Nearest Neighbors</li>
-            <li>🖼️ <strong>Input Format:</strong> Grayscale images</li>
-            <li>📐 <strong>Resolution:</strong> 128×128 pixels</li>
-            <li>⚡ <strong>Performance:</strong> Cached models for speed</li>
-            <li>🔒 <strong>Reliability:</strong> Hybrid approach</li>
+            <li>🧠 <strong>Deep Learning:</strong> Arsitektur CNN</li>
+            <li>🎯 <strong>Klasifikasi:</strong> K-Nearest Neighbors</li>
+            <li>🖼️ <strong>Format Input:</strong> Gambar grayscale</li>
+            <li>📐 <strong>Resolusi:</strong> 128×128 piksel</li>
+            <li>⚡ <strong>Performa:</strong> Model ter-cache untuk kecepatan</li>
+            <li>🔒 <strong>Keandalan:</strong> Pendekatan hybrid</li>
         </ul>
     </div>
     """, unsafe_allow_html=True)
@@ -510,13 +510,13 @@ with right:
     <div class='info-card'>
         <div class='card-title'>
             <span class='icon'>💡</span>
-            <span>Tips for Best Results</span>
+            <span>Tips untuk Hasil Terbaik</span>
         </div>
         <ul class='feature-list'>
-            <li>📸 Use clear, well-lit photos</li>
-            <li>🎯 Focus on the fish body</li>
-            <li>🔍 Avoid blurry images</li>
-            <li>📏 Ensure proper framing</li>
+            <li>📸 Gunakan foto yang jelas dan terang</li>
+            <li>🎯 Fokus pada badan ikan</li>
+            <li>🔍 Hindari gambar yang buram</li>
+            <li>📏 Pastikan framing yang tepat</li>
         </ul>
     </div>
     """, unsafe_allow_html=True)
